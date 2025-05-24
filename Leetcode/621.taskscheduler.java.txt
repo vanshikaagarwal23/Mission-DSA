@@ -1,0 +1,31 @@
+class Solution {
+    public int leastInterval(char[] tasks, int n) {
+        Map<Character, Integer> frequencies = new HashMap<>();
+
+        // Store the frequency of each task
+        for (char t : tasks) {
+            frequencies.put(t, frequencies.getOrDefault(t, 0) + 1);
+        }
+
+        // Sort the frequencies
+        List<Map.Entry<Character, Integer>> sortedFrequencies = new ArrayList<>(frequencies.entrySet());
+        Collections.sort(sortedFrequencies, (lhs, rhs) -> lhs.getValue().compareTo(rhs.getValue()));
+
+        // Store the max frequency
+        int maxFreq = sortedFrequencies.get(sortedFrequencies.size() - 1).getValue();
+        sortedFrequencies.remove(sortedFrequencies.size() - 1);
+
+        // Compute the maximum possible idle time
+        int idleTime = (maxFreq - 1) * n;
+
+        // Iterate over the frequencies array and update the idle time
+        while (!sortedFrequencies.isEmpty() && idleTime > 0) {
+            idleTime -= Math.min(maxFreq - 1, sortedFrequencies.get(sortedFrequencies.size() - 1).getValue());
+            sortedFrequencies.remove(sortedFrequencies.size() - 1);
+        }
+        idleTime = Math.max(0, idleTime);
+
+        // Return the total time, which is the sum of the busy time and idle time
+        return tasks.length + idleTime;
+    }
+}

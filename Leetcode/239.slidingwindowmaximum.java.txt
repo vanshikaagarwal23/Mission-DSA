@@ -1,0 +1,30 @@
+class Solution {
+    public int[] maxSlidingWindow(int[] nums, int k) {
+        int n = nums.length;
+        int[] ans = new int[n - k + 1];
+        Deque<Integer> dq = new ArrayDeque<>();
+
+        for (int i = 0; i < n; i++) {
+            int num = nums[i];
+
+            // Remove all smaller or equal elements from the back
+            while (!dq.isEmpty() && num >= nums[dq.peekLast()]) {
+                dq.removeLast();
+            }
+
+            dq.addLast(i);
+
+            // Remove elements out of the current window from the front if window size exceeds k
+            if (!dq.isEmpty() && dq.peekFirst() < i - k + 1) {
+                dq.removeFirst();
+            }
+
+            // Store result when the first full window is formed
+            if (i >= k - 1) {
+                ans[i - k + 1] = nums[dq.peekFirst()];
+            }
+        }
+
+        return ans;
+    }
+}
